@@ -4,13 +4,17 @@ ARG VENV_NAME="cosyvoice"
 ENV VENV=$VENV_NAME
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-ENV DEBIAN_FRONTEN=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 SHELL ["/bin/bash", "--login", "-c"]
 
-RUN apt-get update -y --fix-missing
-RUN apt-get install -y git build-essential curl wget ffmpeg unzip git git-lfs sox libsox-dev && \
+RUN apt-get update -y --fix-missing && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository universe && \
+    apt-get update -y && \
+    apt-get install -y git build-essential curl wget ffmpeg unzip git-lfs sox libsox-dev && \
     apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
     git lfs install
 
 # ==================================================================
@@ -48,4 +52,50 @@ RUN conda activate ${VENV} && conda install -y -c conda-forge pynini==2.1.5
 RUN conda activate ${VENV} && cd CosyVoice && \
     pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
 
+# ==================================================================
+# Install VLLM for acceleration (conditional based on environment)
+# ------------------------------------------------------------------
+# Install VLLM v0.9.0 for CosyVoice2 acceleration
+RUN conda activate ${VENV} && \
+    pip install vllm==0.9.0 -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com || \
+    echo "VLLM installation failed, will fall back to standard mode"
+
+# Install additional API dependencies
+RUN conda activate ${VENV} && \
+    pip install flask waitress pyloudnorm -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
+# ------------------------------------------------------------------
+# ~VLLM
+# ==================================================================
+
 WORKDIR /workspace/CosyVoice
+
+# Copy enhanced API and utilities
+COPY api/ ./api/
+COPY utils/ ./utils/
+
+# Create necessary directories
+RUN mkdir -p tmp logs pretrained_models
+
+# Set up environment variables for API service
+ENV API_HOST=0.0.0.0
+ENV API_PORT=9997
+ENV MODEL_DIR=pretrained_models/CosyVoice2-0.5B
+ENV LOAD_JIT=false
+ENV LOAD_TRT=false
+ENV FP16=false
+ENV USE_FLOW_CACHE=false
+ENV LOAD_VLLM=auto
+ENV NO_AUTO_VLLM=false
+
+# Expose API port
+EXPOSE 9997
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:9997/health || exit 1
+
+# Entry point script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

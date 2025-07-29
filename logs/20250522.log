@@ -1,0 +1,13 @@
+2025-05-22 19:08:34,332 - api - ERROR - Exception on /v1/audio/speech [POST]
+Traceback (most recent call last):
+  File "D:\CosyVoice\env\lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\CosyVoice\env\lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\CosyVoice\env\lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\CosyVoice\env\lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "D:\CosyVoice\api.py", line 236, in audio_speech
+    return jsonify({"error": {"message": f"必须填写配音角色名或参考音频路径", "type": e.__class__.__name__, "param": f'speed={speed},voice={voice},input={text}', "code": 400}}), 500
+UnboundLocalError: local variable 'e' referenced before assignment

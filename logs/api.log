@@ -1,0 +1,38 @@
+2025-05-22 14:16:45,777 - api - ERROR - OpenAI TTS API error: 'NoneType' object has no attribute 'strip' <class 'AttributeError'>
+2025-05-22 14:24:04,080 - api - ERROR - OpenAI TTS API error: 'lrw' <class 'KeyError'>
+2025-05-22 14:24:18,573 - api - ERROR - OpenAI TTS API error: 'lrw' <class 'KeyError'>
+2025-05-22 14:43:57,899 - api - ERROR - OpenAI TTS API error: 'lrw' <class 'KeyError'>
+2025-05-22 15:10:48,113 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:10:52,233 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:10:56,632 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:13:26,962 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:13:42,562 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:13:47,494 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:15:38,245 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:15:40,310 - api - ERROR - OpenAI TTS API error: 'generator' object is not subscriptable <class 'TypeError'>
+2025-05-22 15:19:21,167 - api - ERROR - OpenAI TTS API error: sequence item 0: expected a bytes-like object, dict found <class 'TypeError'>
+2025-05-22 15:19:35,431 - api - ERROR - OpenAI TTS API error: sequence item 0: expected a bytes-like object, dict found <class 'TypeError'>
+2025-05-22 15:22:15,662 - api - WARNING - Unknown chunk format: dict_keys(['tts_speech'])
+2025-05-22 15:22:15,666 - api - ERROR - OpenAI TTS API error: No audio data generated <class 'Exception'>
+2025-05-22 15:24:01,910 - api - ERROR - OpenAI TTS API error: 'Request' object has no attribute 'get' <class 'AttributeError'>
+2025-05-22 15:33:52,076 - api - ERROR - Audio generation error: set use_flow_cache=True if you want to use stream inference to avoid OOM
+2025-05-22 15:34:03,176 - api - ERROR - Audio generation error: set use_flow_cache=True if you want to use stream inference to avoid OOM
+2025-05-22 15:39:31,149 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:32,296 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:33,111 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:33,884 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:48,844 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:50,147 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:50,949 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:39:51,783 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:40:35,843 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:40:37,100 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:40:37,848 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:40:38,469 - api - WARNING - Unknown chunk format: ['tts_speech']
+2025-05-22 15:43:16,401 - api - ERROR - Error processing audio chunk: Boolean value of Tensor with more than one value is ambiguous
+2025-05-22 15:43:17,231 - api - ERROR - Error processing audio chunk: Boolean value of Tensor with more than one value is ambiguous
+2025-05-22 15:43:18,003 - api - ERROR - Error processing audio chunk: Boolean value of Tensor with more than one value is ambiguous
+2025-05-22 15:43:18,726 - api - ERROR - Error processing audio chunk: Boolean value of Tensor with more than one value is ambiguous
+2025-05-22 15:50:39,815 - api - ERROR - Audio generation error: set use_flow_cache=True if you want to use stream inference to avoid OOM
+2025-05-22 17:14:36,830 - api - ERROR - TTS generation error: 'Tensor' object has no attribute 'strip'
+2025-05-22 18:01:11,873 - api - ERROR - TTS generation error: Model tts-1 not available

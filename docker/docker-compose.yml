@@ -1,0 +1,88 @@
+services:
+  cosyvoice-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: cosyvoice-api:latest
+    container_name: cosyvoice-api-server
+    restart: unless-stopped
+    
+    # GPU support for CUDA and VLLM acceleration
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    
+    # Environment variables (can be overridden via .env file)
+    environment:
+      # API Server Configuration
+      - API_HOST=${API_HOST:-0.0.0.0}
+      - API_PORT=${API_PORT:-9996}
+      
+      # Model Configuration
+      - MODEL_DIR=${MODEL_DIR:-pretrained_models/CosyVoice2-0.5B}
+      
+      # Performance Options
+      - LOAD_JIT=${LOAD_JIT:-false}
+      - LOAD_TRT=${LOAD_TRT:-false}
+      - FP16=${FP16:-false}
+      - USE_FLOW_CACHE=${USE_FLOW_CACHE:-false}
+      
+      # VLLM Configuration
+      - LOAD_VLLM=${LOAD_VLLM:-auto}
+      - NO_AUTO_VLLM=${NO_AUTO_VLLM:-false}
+      
+      # CUDA Configuration
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-all}
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
+    
+    # Volume mappings
+    volumes:
+      # Model files - IMPORTANT: Update this path to your actual model directory
+      - ${MODELS_PATH:-../pretrained_models}:/workspace/CosyVoice/pretrained_models:ro
+      
+      # Logs and temporary files
+      - ${LOGS_PATH:-../logs}:/workspace/CosyVoice/logs
+      - ${TMP_PATH:-../tmp}:/workspace/CosyVoice/tmp
+      
+      # Optional: Custom configuration
+      - ${CONFIG_PATH:-../config}:/workspace/CosyVoice/config:ro
+    
+    # Port mapping
+    ports:
+      - "${API_PORT:-9997}:9997"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9997/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Network configuration
+    networks:
+      - cosyvoice-network
+
+# Network definition
+networks:
+  cosyvoice-network:
+    driver: bridge
+    
+# Optional: Shared volumes for data persistence
+volumes:
+  cosyvoice-logs:
+    driver: local
+  cosyvoice-tmp:
+    driver: local
