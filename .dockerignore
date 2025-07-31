@@ -1,0 +1,108 @@
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.pyc
+*.pyo
+*.pyd
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Documentation
+docs/
+README.md
+FAQ.md
+CODE_OF_CONDUCT.md
+*.md
+!CLAUDE.md
+
+# Tests
+tests/
+test_*
+*_test.py
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+*.tmp
+*.temp
+
+# Examples and training data (keep only essentials)
+examples/
+dataset/
+exp/
+
+# Model files (will be mounted as volumes)
+pretrained_models/
+checkpoints/
+models/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Scripts (keep docker entrypoint)
+*.sh
+!docker/entrypoint.sh
+
+# Configuration files (keep docker compose)
+*.yaml
+*.yml
+!docker/docker-compose.yml

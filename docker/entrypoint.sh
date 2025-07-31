@@ -12,7 +12,7 @@ echo "=============================================="
 # Print environment configuration
 echo "📍 Configuration:"
 echo "   Host: ${API_HOST:-0.0.0.0}"
-echo "   Port: ${API_PORT:-9997}"
+echo "   Port: ${API_PORT:-9996}"
 echo "   Model: ${MODEL_DIR:-pretrained_models/CosyVoice2-0.5B}"
 echo "   JIT: ${LOAD_JIT:-false}"
 echo "   TensorRT: ${LOAD_TRT:-false}"
@@ -31,7 +31,7 @@ fi
 # Build command line arguments
 ARGS=""
 ARGS="${ARGS} --host ${API_HOST:-0.0.0.0}"
-ARGS="${ARGS} --port ${API_PORT:-9997}"
+ARGS="${ARGS} --port ${API_PORT:-9996}"
 ARGS="${ARGS} --model ${MODEL_DIR:-pretrained_models/CosyVoice2-0.5B}"
 
 # Add optional flags based on environment variables
@@ -65,4 +65,4 @@ echo "=============================================="
 cd /workspace/CosyVoice
 
 # Start the API server
-exec python api/api.py${ARGS}
+exec python api/api.py ${ARGS}

@@ -686,26 +686,34 @@ def load_model(model_dir, **kwargs):
         return False
 
 def parse_args():
-    """Parse command line arguments"""
+    """Parse command line arguments with environment variable fallbacks"""
     parser = argparse.ArgumentParser(description='CosyVoice OpenAI Compatible TTS API')
     parser.add_argument('--model', type=str, 
-                       default='pretrained_models/CosyVoice-300M-SFT',
+                       default=os.getenv('MODEL_DIR', 'pretrained_models/CosyVoice-300M-SFT'),
                        help='Path to model directory')
-    parser.add_argument('--host', type=str, default='0.0.0.0',
+    parser.add_argument('--host', type=str, 
+                       default=os.getenv('API_HOST', '0.0.0.0'),
                        help='Host address')
-    parser.add_argument('--port', type=int, default=9996,
+    parser.add_argument('--port', type=int, 
+                       default=int(os.getenv('API_PORT', '9996')),
                        help='Port number')
     parser.add_argument('--load-jit', action='store_true',
+                       default=os.getenv('LOAD_JIT', 'false').lower() == 'true',
                        help='Enable JIT compilation')
-    parser.add_argument('--load-trt', action='store_true', 
+    parser.add_argument('--load-trt', action='store_true',
+                       default=os.getenv('LOAD_TRT', 'false').lower() == 'true', 
                        help='Enable TensorRT optimization')
     parser.add_argument('--fp16', action='store_true',
+                       default=os.getenv('FP16', 'false').lower() == 'true',
                        help='Enable FP16 precision')
     parser.add_argument('--use-flow-cache', action='store_true',
+                       default=os.getenv('USE_FLOW_CACHE', 'false').lower() == 'true',
                        help='Enable flow cache (CosyVoice2 only)')
     parser.add_argument('--load-vllm', action='store_true',
+                       default=os.getenv('LOAD_VLLM', 'auto').lower() == 'true',
                        help='Explicitly enable VLLM acceleration (auto-detected for CosyVoice2)')
     parser.add_argument('--no-auto-vllm', action='store_true',
+                       default=os.getenv('NO_AUTO_VLLM', 'false').lower() == 'true',
                        help='Disable automatic VLLM detection and acceleration')
     
     return parser.parse_args()

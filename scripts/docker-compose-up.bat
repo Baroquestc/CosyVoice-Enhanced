@@ -8,7 +8,7 @@ echo ======================================================
 echo.
 
 set "WORK_DIR=%~dp0"
-set "DOCKER_DIR=%WORK_DIR%..\docker"
+set "PROJECT_ROOT=%WORK_DIR%.."
 
 REM --- 检查 Docker 是否正在运行 ---
 echo [+] 正在检查 Docker Desktop 状态...
@@ -35,9 +35,9 @@ if %errorlevel% neq 0 (
 echo.
 echo ======================================================
 echo.
-echo [+] 在`%DOCKER_DIR%`目录执行 docker compose up -d
-cd /d "%DOCKER_DIR%"
-docker compose up -d
+echo [+] 从项目根目录执行 docker compose -f docker/docker-compose.yml up -d
+cd /d "%PROJECT_ROOT%"
+docker compose -f docker/docker-compose.yml up -d
 
 echo.
 echo ======================================================

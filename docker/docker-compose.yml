@@ -1,8 +1,8 @@
 services:
   cosyvoice-api:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: ..  # Build context is project root
+      dockerfile: docker/Dockerfile  # Dockerfile path relative to context
     image: cosyvoice-api:latest
     container_name: cosyvoice-api-server
     restart: unless-stopped
@@ -54,11 +54,11 @@ services:
     
     # Port mapping
     ports:
-      - "${API_PORT:-9997}:9997"
+      - "${API_PORT:-9996}:9996"
     
     # Health check
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9997/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9996/health"]
       interval: 30s
       timeout: 10s
       retries: 3
