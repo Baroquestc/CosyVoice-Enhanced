@@ -15,11 +15,15 @@ import librosa
 import numpy as np
 import pyloudnorm
 from flask import Flask, request, Response, jsonify, stream_with_context
+
+# Add project root to sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from cosyvoice.cli.cosyvoice import CosyVoice, CosyVoice2
 from cosyvoice.utils.file_utils import load_wav
 
 # Setup paths
-root_dir = Path(__file__).parent.absolute()
+root_dir = Path(__file__).parent.parent.absolute()
 
 # FFmpeg path setup
 if sys.platform == 'win32':
@@ -33,6 +37,13 @@ sys.path.append(str(root_dir / 'third_party' / 'Matcha-TTS'))
 
 # Import VLLM utilities for auto-detection
 from utils.vllm_utils import check_vllm_availability, should_enable_vllm_for_model, log_vllm_status, register_cosyvoice2_vllm
+
+# Model downloading utilities
+try:
+    from modelscope import snapshot_download
+    MODELSCOPE_AVAILABLE = True
+except ImportError:
+    MODELSCOPE_AVAILABLE = False
 
 # Create directories
 for dir_name in ['tmp', 'logs']:
@@ -396,6 +407,67 @@ def convert_audio_format(audio_bytes, input_format='wav', output_format='mp3'):
         print(f"Conversion error: {e}")
         raise
 
+def check_model_exists(model_dir):
+    """Check if model directory exists and contains required files"""
+    if not os.path.exists(model_dir):
+        return False
+    
+    # Check for essential model files
+    required_files = ['cosyvoice.yaml']
+    for file in required_files:
+        if not os.path.exists(os.path.join(model_dir, file)):
+            return False
+    
+    return True
+
+def get_model_id_from_path(model_dir):
+    """Get ModelScope model ID from model directory path"""
+    model_mapping = {
+        'CosyVoice2-0.5B': 'iic/CosyVoice2-0.5B',
+        'CosyVoice-300M': 'iic/CosyVoice-300M', 
+        'CosyVoice-300M-SFT': 'iic/CosyVoice-300M-SFT',
+        'CosyVoice-300M-Instruct': 'iic/CosyVoice-300M-Instruct',
+        'CosyVoice-ttsfrd': 'iic/CosyVoice-ttsfrd'
+    }
+    
+    # Extract model name from path
+    model_name = os.path.basename(model_dir.rstrip('/'))
+    return model_mapping.get(model_name)
+
+def download_model(model_dir):
+    """Download model from ModelScope if not exists"""
+    if not MODELSCOPE_AVAILABLE:
+        print("❌ ModelScope not available. Please install with: pip install modelscope")
+        return False
+    
+    model_id = get_model_id_from_path(model_dir)
+    if not model_id:
+        print(f"❌ Unknown model directory: {model_dir}")
+        print("Supported models: CosyVoice2-0.5B, CosyVoice-300M, CosyVoice-300M-SFT, CosyVoice-300M-Instruct, CosyVoice-ttsfrd")
+        return False
+    
+    try:
+        print(f"📥 Downloading model {model_id} to {model_dir}...")
+        snapshot_download(model_id, local_dir=model_dir)
+        print(f"✅ Model downloaded successfully!")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to download model: {e}")
+        return False
+
+def ensure_model_available(model_dir):
+    """Ensure model is available, download if necessary"""
+    if check_model_exists(model_dir):
+        print(f"✅ Model found: {model_dir}")
+        return True
+    
+    print(f"⚠️  Model not found: {model_dir}")
+    
+    # Create parent directory if it doesn't exist
+    os.makedirs(os.path.dirname(model_dir), exist_ok=True)
+    
+    return download_model(model_dir)
+
 def get_mime_type(format_type):
     """Get MIME type for audio format"""
     mime_types = {
@@ -671,7 +743,7 @@ def load_model(model_dir, **kwargs):
             tts_model = CosyVoice2(model_dir, **kwargs)
         else:
             # Remove CosyVoice2-specific parameters
-            filtered_kwargs = {k: v for k, v in kwargs.items() if k not in ['use_flow_cache', 'load_vllm']}
+            filtered_kwargs = {k: v for k, v in kwargs.items() if k not in ['load_vllm']}
             tts_model = CosyVoice(model_dir, **filtered_kwargs)
 
         supported_voices = tts_model.list_available_spks()
@@ -706,9 +778,6 @@ def parse_args():
     parser.add_argument('--fp16', action='store_true',
                        default=os.getenv('FP16', 'false').lower() == 'true',
                        help='Enable FP16 precision')
-    parser.add_argument('--use-flow-cache', action='store_true',
-                       default=os.getenv('USE_FLOW_CACHE', 'false').lower() == 'true',
-                       help='Enable flow cache (CosyVoice2 only)')
     parser.add_argument('--load-vllm', action='store_true',
                        default=os.getenv('LOAD_VLLM', 'auto').lower() == 'true',
                        help='Explicitly enable VLLM acceleration (auto-detected for CosyVoice2)')
@@ -734,7 +803,6 @@ def main():
         'load_jit': args.load_jit,
         'load_trt': args.load_trt, 
         'fp16': args.fp16,
-        'use_flow_cache': args.use_flow_cache
     }
     
     # Handle VLLM arguments
@@ -745,6 +813,11 @@ def main():
         # Explicitly enable VLLM
         model_kwargs['load_vllm'] = True
     # Otherwise, let auto-detection handle it (don't set load_vllm)
+    
+    # Ensure model is available
+    if not ensure_model_available(args.model):
+        print("Failed to download or find model. Exiting.")
+        sys.exit(1)
     
     if not load_model(args.model, **model_kwargs):
         print("Failed to load model. Exiting.")
@@ -758,7 +831,7 @@ def main():
     print(f"📋 Health check: http://{args.host}:{args.port}/health")
     print(f"🎵 Supported formats: {SUPPORTED_FORMATS}")
     print(f"🎤 Supported voices: {supported_voices}")
-    print(f"⚡ Model options: JIT={args.load_jit}, TRT={args.load_trt}, FP16={args.fp16}, FlowCache={args.use_flow_cache}")
+    print(f"⚡ Model options: JIT={args.load_jit}, TRT={args.load_trt}, FP16={args.fp16},")
     print(f"🔊 Audio normalization: Enabled with default target LUFS: -16")
     
     # Show VLLM status

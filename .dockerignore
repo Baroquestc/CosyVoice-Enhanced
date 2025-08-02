@@ -98,9 +98,14 @@ models/
 # Jupyter
 .ipynb_checkpoints/
 
-# Scripts (keep docker entrypoint)
+# Scripts (keep docker entrypoint and build scripts)
 *.sh
+*.bat
 !docker/entrypoint.sh
+!docker/build.sh
+!docker/build.bat
+!docker/download-packages.sh
+!docker/download-packages.bat
 
 # Configuration files (keep docker compose)
 *.yaml

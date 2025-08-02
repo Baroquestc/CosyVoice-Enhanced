@@ -21,8 +21,12 @@ def load_spk2info(path):
         spk2info = torch.load(path, map_location=device)
         return spk2info
     else:
-        print(f"load {path} failed because it not exist")
-        return None
+        print(f"Warning: Could not load spk2info file from {path}, creating a new one.")
+        spk2info = {}
+        # ensure parent dir exists
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        torch.save(spk2info, path)
+        return spk2info
 
 """
 upgrade spk2info to new format which is support cosyvoice2 also compatible with cosyvoice

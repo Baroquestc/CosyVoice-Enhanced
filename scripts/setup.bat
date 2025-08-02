@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+pushd %~dp0..
+
 echo "Checking Conda installation..."
 
 :: Check if conda is installed
@@ -122,4 +124,5 @@ echo "Deactivate environment: conda deactivate"
 echo.
 echo "Environment is already activated, ready to use."
 
+popd
 endlocal 

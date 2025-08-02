@@ -24,11 +24,15 @@ from pathlib import Path
 from typing import Optional, Dict, List, Any
 import threading
 import time
+
+# Add project root to sys.path to allow running from 'api' directory
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from utils.i18n import I18n
 from utils.spk2info_utils import load_spk2info, extract_spkinfo, append_voice_to_spk2info, delete_voice_from_spk2info
 
 # Configuration and Setup
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 MODELS_DIR = Path(ROOT_DIR) / "pretrained_models"
 
@@ -1269,13 +1273,13 @@ def create_interface(fixed_model=None):
         load_btn.click(
             handle_load_model,
             inputs=[available_models, model_state],
-            outputs=[model_status, model_info, sft_voice, voice_list_df, model_state, available_models, mode_select]
+            outputs=[model_status, model_info, sft_voice, voice_list_df, model_state, available_models, mode_select, model_compatibility_info]
         )
         
         unload_btn.click(
             handle_unload_model,
             inputs=[model_state],
-            outputs=[model_status, model_info, sft_voice, voice_list_df, model_state, available_models, mode_select]
+            outputs=[model_status, model_info, sft_voice, voice_list_df, model_state, available_models, mode_select, model_compatibility_info]
         )
         
         # Auto-load model on page load
