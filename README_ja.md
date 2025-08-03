@@ -49,7 +49,7 @@
 
 ```bash
 # リポジトリをクローン
-git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
 cd CosyVoice
 
 # モデルをダウンロード（お好みのモデルを選択）

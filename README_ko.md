@@ -49,7 +49,7 @@
 
 ```bash
 # 저장소 클론
-git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
 cd CosyVoice
 
 # 모델 다운로드 (선호하는 모델 선택)

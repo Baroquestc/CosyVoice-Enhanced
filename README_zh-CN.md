@@ -49,7 +49,7 @@
 
 ```bash
 # 克隆仓库
-git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
 cd CosyVoice
 
 # 下载模型（选择您偏好的模型）

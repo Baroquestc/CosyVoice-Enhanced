@@ -49,7 +49,7 @@ Cette édition améliorée est construite sur le [FunAudioLLM/CosyVoice](https:/
 
 ```bash
 # Cloner le dépôt
-git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
 cd CosyVoice
 
 # Télécharger les modèles (choisir votre modèle préféré)

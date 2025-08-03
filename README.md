@@ -58,7 +58,7 @@ This enhanced version is built upon the official [FunAudioLLM/CosyVoice](https:/
 
 ```bash
 # Clone the repository
-git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
 cd CosyVoice
 
 # Download models (choose your preferred model)
