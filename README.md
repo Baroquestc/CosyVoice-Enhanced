@@ -2,6 +2,15 @@
 
 [![SVG Banners](https://svg-banners.vercel.app/api?type=origin&text1=CosyVoice🤠&text2=OpenAI%20Compatible%20TTS%20API&width=800&height=210)](https://github.com/FunAudioLLM/CosyVoice)
 
+## 🌍 Language / 语言 / 言語 / 언어
+
+- **English** (Current)
+- **[简体中文](README_zh-CN.md)** - 中文版本
+- **[日本語](README_ja.md)** - 日本語版
+- **[한국어](README_ko.md)** - 한국어 버전
+- **[Français](README_fr.md)** - Version française
+- **[Deutsch](README_de.md)** - Deutsche Version
+
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-brightgreen" alt="Python Version">
   <img src="https://img.shields.io/badge/Docker-Ready-blue" alt="Docker Ready">
