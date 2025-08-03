@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   cosyvoice-api:
     build:
@@ -6,8 +8,6 @@ services:
     image: cosyvoice-api:latest
     container_name: cosyvoice-api-server
     restart: unless-stopped
-    # 2. 添加下面这行，让容器启动后永久睡眠
-    # command: ["/bin/bash", "-c", "sleep infinity"] 
     # GPU support for CUDA and VLLM acceleration
     deploy:
       resources:
@@ -17,25 +17,32 @@ services:
               count: all
               capabilities: [gpu]
     
+    command:
+      - "sh"
+      - "-c"
+      - |
+        ARGS='--host 0.0.0.0 --port 9996 --model ../${MODEL_DIR:-pretrained_models/CosyVoice2-0.5B}'
+        case "${LOAD_JIT}" in true) ARGS="$ARGS --load-jit";; esac
+        case "${LOAD_TRT}" in true) ARGS="$ARGS --load-trt";; esac
+        case "${FP16}" in true) ARGS="$ARGS --fp16";; esac
+        case "${LOAD_VLLM}" in true) ARGS="$ARGS --load-vllm";; esac
+        case "${NO_AUTO_VLLM}" in true) ARGS="$ARGS --no-auto-vllm";; esac
+        exec conda run --no-capture-output -n cosyvoice_vllm python api/api.py $ARGS
+
     # Environment variables (can be overridden via .env file)
     environment:
       # Model Configuration
       - MODEL_DIR=${MODEL_DIR:-pretrained_models/CosyVoice2-0.5B}
       
       # Performance Options
-      - LOAD_JIT=${LOAD_JIT:-}
-      - LOAD_TRT=${LOAD_TRT:-}
-      - FP16=${FP16:-}
+      - LOAD_JIT=${LOAD_JIT:-True}
+      - LOAD_TRT=${LOAD_TRT:-True}
+      - FP16=${FP16:-True}
       
       # VLLM Configuration
-      - LOAD_VLLM=${LOAD_VLLM:-}
+      - LOAD_VLLM=${LOAD_VLLM:-auto}
       - NO_AUTO_VLLM=${NO_AUTO_VLLM:-}
       
-      # CUDA Configuration
-      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-all}
-      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
-      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
-    
     # Volume mappings
     volumes:
       # Model files - IMPORTANT: Update this path to your actual model directory
@@ -47,6 +54,9 @@ services:
       
       # Optional: Custom configuration
       - ${CONFIG_PATH:-../config}:/workspace/CosyVoice/config
+
+      # Cache for downloaded models/packages
+      - ${CACHE_PATH:-../.cache}:/root/.cache
     
     # Port mapping - Fixed to 9996 as per container default
     ports:
