@@ -45,6 +45,18 @@
 
 ## 🚀 クイックスタート
 
+> [!IMPORTANT]
+> このプロジェクトは `Matcha-TTS` をサブモジュールとして含んでいます。正しくクローンするために、`git clone` に `--recursive` フラグを使用してください：
+> ```bash
+> git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
+> ```
+> もしサブモジュールなしでリポジトリをクローンしてしまった場合は、次のコマンドで初期化できます：
+> ```bash
+> git submodule update --init --recursive
+> ```
+
+
+
 ### オプション1：Docker デプロイメント（推奨）
 
 ```bash

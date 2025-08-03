@@ -45,6 +45,18 @@
 
 ## 🚀 快速开始
 
+> [!IMPORTANT]
+> 本项目包含 `Matcha-TTS` 作为子模块。为确保正确克隆，请在使用 `git clone` 时添加 `--recursive` 标志：
+> ```bash
+> git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
+> ```
+> 如果您已经克隆了仓库但未包含子模块，可以运行以下命令来初始化它：
+> ```bash
+> git submodule update --init --recursive
+> ```
+
+
+
 ### 方案 1：Docker 部署（推荐）
 
 ```bash

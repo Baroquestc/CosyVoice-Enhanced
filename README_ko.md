@@ -45,6 +45,18 @@
 
 ## 🚀 빠른 시작
 
+> [!IMPORTANT]
+> 이 프로젝트에는 `Matcha-TTS`가 서브모듈로 포함되어 있습니다. 올바르게 클론하려면 `git clone`에 `--recursive` 플래그를 사용하십시오:
+> ```bash
+> git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
+> ```
+> 서브모듈 없이 저장소를 이미 클론한 경우 다음 명령을 실행하여 초기화할 수 있습니다:
+> ```bash
+> git submodule update --init --recursive
+> ```
+
+
+
 ### 옵션 1: Docker 배포 (권장)
 
 ```bash

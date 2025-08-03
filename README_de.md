@@ -45,6 +45,18 @@ Diese erweiterte Version basiert auf dem offiziellen [FunAudioLLM/CosyVoice](htt
 
 ## 🚀 Schnellstart
 
+> [!IMPORTANT]
+> Dieses Projekt enthält `Matcha-TTS` als Submodul. Um sicherzustellen, dass es korrekt geklont wird, verwenden Sie bitte das Flag `--recursive` mit `git clone`:
+> ```bash
+> git clone --recursive https://github.com/EitanWong/CosyVoice-Enhanced.git
+> ```
+> Wenn Sie das Repository bereits ohne das Submodul geklont haben, können Sie es initialisieren, indem Sie Folgendes ausführen:
+> ```bash
+> git submodule update --init --recursive
+> ```
+
+
+
 ### Option 1: Docker-Bereitstellung (Empfohlen)
 
 ```bash
