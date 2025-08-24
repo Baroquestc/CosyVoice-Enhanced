@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+FROM nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
 
 # Use a single, consistent environment name
 ARG VENV_NAME="cosyvoice_vllm"
@@ -19,21 +19,27 @@ RUN apt-get update -y --fix-missing && \
 #     rm ~/miniforge.sh
 # --- Conda Installation ---
 # 从构建上下文复制预先下载好的安装脚本
-COPY docker/Miniforge3-Linux-x86_64.sh /tmp/miniforge.sh
+COPY docker/Miniconda3-latest-Linux-x86_64.sh /tmp/miniconda.sh
 
 # 执行安装脚本并随后清理
-RUN /bin/bash /tmp/miniforge.sh -b -p /opt/conda && \
-    rm /tmp/miniforge.sh
+RUN /bin/bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh
 
 ENV PATH /opt/conda/bin:$PATH
 
 # --- Conda Configuration ---
-RUN conda config --add channels conda-forge && \
+# RUN conda config --add channels conda-forge && \
+#     conda config --set channel_priority strict
+RUN conda config --remove-key channels && \
+    conda config --add channels conda-forge && \
     conda config --set channel_priority strict
+
+RUN conda tos accept --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --channel https://repo.anaconda.com/pkgs/r
 
 # --- Python Environment Setup ---
 # Create the environment that will actually be used
-RUN conda create -y -n ${VENV_NAME} python=3.10
+RUN conda create -y -n ${VENV_NAME} python=3.10 --override-channels -c conda-forge
 # Set up the shell to auto-activate this environment
 RUN echo "source /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate ${VENV_NAME}" >> ~/.bashrc
@@ -41,7 +47,8 @@ RUN echo "source /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
 # --- Project Checkout ---
 WORKDIR /workspace
 ENV PYTHONPATH="${PYTHONPATH}:/workspace/CosyVoice:/workspace/CosyVoice/third_party/Matcha-TTS"
-RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+# RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+COPY docker/CosyVoice/ /workspace/CosyVoice
 
 WORKDIR /workspace/CosyVoice
 
@@ -78,4 +85,3 @@ COPY utils/ /workspace/CosyVoice/utils/
 EXPOSE 9996
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:9996/health || exit 1
-
